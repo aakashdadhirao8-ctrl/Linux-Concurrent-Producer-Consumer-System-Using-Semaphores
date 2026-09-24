@@ -21,7 +21,7 @@ void check_memory_limit(int pid, const char* comm) {
     if (fp) {
         long size, resident;
         if (fscanf(fp, "%ld %ld", &size, &resident) == 2) {
-           
+           long memory_mb = (resident * sysconf(_SC_PAGESIZE)) / (1024 * 1024);
             if (memory_mb > 500) { // Limit hardcoded to 500MB
                 log_action(pid, "WARNING: MEMORY LIMIT EXCEEDED");
             }
