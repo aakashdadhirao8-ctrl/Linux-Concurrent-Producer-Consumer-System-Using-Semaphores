@@ -4,7 +4,7 @@
 #include <string.h>
 #include <sys/wait.h>
 
-// Forward declaration to link to daemon.c (No header file needed)
+
 extern void run_monitor_daemon(int fd_in, int fd_out);
 
 int main() {
@@ -24,7 +24,7 @@ int main() {
     }
 
     if (pid == 0) {
-        // --- CHILD PROCESS (Daemon) ---
+     
         close(pipe_cmd[1]);  
         close(pipe_data[0]); 
         
@@ -35,7 +35,6 @@ int main() {
         exit(0);
     } 
     else {
-        // --- PARENT PROCESS (UI) ---
         close(pipe_cmd[0]);  
         close(pipe_data[1]); 
 
@@ -47,17 +46,16 @@ int main() {
             system("clear");
             printf("=== LINUX MULTI-FILE IPC MONITOR ===\n\n");
 
-            // 1. Send REFRESH command
+        
             cmd[0] = 0; cmd[1] = 0;
             write(pipe_cmd[1], cmd, sizeof(cmd));
 
-            // 2. Read processes from the data pipe
             while (fgets(buffer, sizeof(buffer), data_in) != NULL) {
                 if (strcmp(buffer, "END\n") == 0) break;
                 printf("%s", buffer);
             }
 
-            // 3. Render Menu
+       
             printf("\nOptions: [0] Refresh | [PID] Control Process | [-1] Exit\nChoice: ");
             
             int input_pid;
@@ -67,7 +65,7 @@ int main() {
             }
 
             if (input_pid == -1) {
-                cmd[0] = -1; // Exit command
+                cmd[0] = -1; 
                 write(pipe_cmd[1], cmd, sizeof(cmd)); 
                 break;
             } else if (input_pid > 0) {
@@ -82,7 +80,7 @@ int main() {
             }
         }
         
-        wait(NULL); // Wait for child to exit cleanly
+     
         fclose(data_in);
         close(pipe_cmd[1]);
         printf("System shut down cleanly.\n");
