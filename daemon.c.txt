@@ -1,14 +1,14 @@
 #include <unistd.h>
 #include <stdio.h>
 
-// Forward declarations to link parser.c and controller.c
+
 extern void send_process_list(int fd_out);
 extern void handle_control(int pid, int action);
 
 void run_monitor_daemon(int fd_in, int fd_out) {
     int cmd[2]; // cmd[0] = action, cmd[1] = pid
 
-    // Block and wait for commands from main.c
+ 
     while (read(fd_in, cmd, sizeof(cmd)) > 0) {
         
         if (cmd[0] == -1) {
@@ -16,11 +16,11 @@ void run_monitor_daemon(int fd_in, int fd_out) {
         }
         
         if (cmd[0] == 0) {
-            // Refresh command: let parser.c read /proc and write to pipe
+        
             send_process_list(fd_out);
         } 
         else {
-            // Control command: let controller.c handle signals
+      
             handle_control(cmd[1], cmd[0]);
         }
     }
